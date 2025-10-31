@@ -1,0 +1,41 @@
+{
+  "pingInterval": "*/10 * * * *",
+  "timeout": 30000,
+  "endpoints": [
+    {
+      "name": "Example App 1",
+      "url": "https://your-app-1.onrender.com",
+      "method": "GET"
+    },
+    {
+      "name": "Example App 2 with Health Check",
+      "url": "https://your-app-2.onrender.com/health",
+      "method": "GET"
+    },
+    {
+      "name": "Example App 3 with Login",
+      "url": "https://your-app-3.onrender.com/api/login",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "username": "keepalive",
+        "password": "your-password"
+      }
+    },
+    {
+      "name": "Example App 4",
+      "url": "https://your-app-4.onrender.com/api/ping",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer your-token-here"
+      },
+      "body": {
+        "ping": true
+      }
+    }
+  ]
+}
+

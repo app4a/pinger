@@ -1,0 +1,12 @@
+{
+  "pingInterval": "*/30 * * * *",
+  "timeout": 30000,
+  "endpoints": [
+    {
+      "name": "QnALive",
+      "url": "https://qnalive.onrender.com",
+      "method": "GET"
+    }
+  ]
+}
+
