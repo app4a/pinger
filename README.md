@@ -55,6 +55,28 @@ git push origin main
 3. If prompted, enable GitHub Actions for your repository
 4. The pinger will start running automatically based on your schedule
 
+## Quick Reference: Using Secrets
+
+**For POST requests with sensitive data:**
+
+1. In `config.json`, use placeholders:
+   ```json
+   "body": {
+     "username": "${LOGIN_USERNAME}",
+     "password": "${LOGIN_PASSWORD}"
+   }
+   ```
+
+2. In GitHub: Settings → Secrets → New secret → Add `LOGIN_USERNAME` and `LOGIN_PASSWORD`
+
+3. In `.github/workflows/pinger.yml`, add under `env:`:
+   ```yaml
+   LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+   LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+   ```
+
+Done! Your secrets are now secure. ✅
+
 ## Configuration
 
 ### Basic Configuration
@@ -219,11 +241,118 @@ If you're hitting rate limits on your apps:
 2. Reduce the number of endpoints
 3. Add delays between pings (requires modifying `ping.js`)
 
+## Using GitHub Secrets for Sensitive Data
+
+**IMPORTANT**: Never hardcode passwords, API tokens, or other sensitive information in `config.json`!
+
+### How It Works
+
+The pinger supports environment variable substitution using the `${VAR_NAME}` syntax. These variables are securely passed from GitHub Secrets.
+
+### Step-by-Step Setup
+
+#### 1. Add Placeholders in config.json
+
+Use `${VARIABLE_NAME}` syntax for sensitive values:
+
+```json
+{
+  "endpoints": [
+    {
+      "name": "My App with Login",
+      "url": "https://my-app.onrender.com/api/login",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "username": "${LOGIN_USERNAME}",
+        "password": "${LOGIN_PASSWORD}"
+      }
+    },
+    {
+      "name": "App with API Key",
+      "url": "https://my-app.onrender.com/api/data",
+      "method": "GET",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}"
+      }
+    }
+  ]
+}
+```
+
+#### 2. Create GitHub Secrets
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add each secret:
+   - Name: `LOGIN_USERNAME`, Value: your actual username
+   - Name: `LOGIN_PASSWORD`, Value: your actual password
+   - Name: `API_TOKEN`, Value: your actual token
+   - etc.
+
+#### 3. Update the Workflow File
+
+Edit `.github/workflows/pinger.yml` to pass secrets as environment variables:
+
+```yaml
+- name: Run ping script
+  run: node ping.js
+  env:
+    LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+    LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+    API_TOKEN: ${{ secrets.API_TOKEN }}
+```
+
+#### 4. Test Your Setup
+
+1. Push your changes to GitHub
+2. Go to **Actions** tab and manually trigger the workflow
+3. Check the logs - secrets will be masked as `***`
+
+### Examples
+
+See `config-examples.json` for more examples of using environment variables.
+
+### Local Testing with Secrets
+
+To test locally with environment variables:
+
+```bash
+# Set environment variables
+export LOGIN_USERNAME="myusername"
+export LOGIN_PASSWORD="mypassword"
+export API_TOKEN="mytoken"
+
+# Run the script
+node ping.js
+```
+
+Or use a `.env` file (make sure it's in `.gitignore`):
+
+```bash
+# Install dotenv
+npm install dotenv
+
+# Create .env file
+echo "LOGIN_USERNAME=myusername" > .env
+echo "LOGIN_PASSWORD=mypassword" >> .env
+echo "API_TOKEN=mytoken" >> .env
+
+# Run with dotenv (requires adding dotenv to ping.js)
+node -r dotenv/config ping.js
+```
+
 ## Security Notes
 
-- Never commit sensitive credentials directly in `config.json`
-- Consider using GitHub Secrets for sensitive data (requires modifying the workflow)
-- Use environment variables for passwords and tokens when possible
+- ✅ **DO** use GitHub Secrets for sensitive data
+- ✅ **DO** use environment variable placeholders `${VAR_NAME}` in config.json
+- ✅ **DO** keep `.env` files in `.gitignore` for local testing
+- ❌ **DON'T** commit passwords, tokens, or API keys directly in config.json
+- ❌ **DON'T** share your secrets in public repositories
+- ❌ **DON'T** log sensitive values in your code
 
 ## License
 

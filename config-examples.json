@@ -1,41 +1,45 @@
 {
-  "pingInterval": "*/10 * * * *",
+  "pingInterval": "*/30 * * * *",
   "timeout": 30000,
   "endpoints": [
     {
-      "name": "Example App 1",
-      "url": "https://your-app-1.onrender.com",
+      "name": "Simple GET Request",
+      "url": "https://my-app.onrender.com",
       "method": "GET"
     },
     {
-      "name": "Example App 2 with Health Check",
-      "url": "https://your-app-2.onrender.com/health",
-      "method": "GET"
+      "name": "GET with Auth Header",
+      "url": "https://my-app.onrender.com/api/data",
+      "method": "GET",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}"
+      }
     },
     {
-      "name": "Example App 3 with Login",
-      "url": "https://your-app-3.onrender.com/api/login",
+      "name": "POST Login with Credentials",
+      "url": "https://my-app.onrender.com/api/login",
       "method": "POST",
       "headers": {
         "Content-Type": "application/json"
       },
       "body": {
-        "username": "keepalive",
-        "password": "your-password"
+        "username": "${LOGIN_USERNAME}",
+        "password": "${LOGIN_PASSWORD}"
       }
     },
     {
-      "name": "Example App 4",
-      "url": "https://your-app-4.onrender.com/api/ping",
+      "name": "POST with Mixed Sensitive and Non-Sensitive Data",
+      "url": "https://my-app.onrender.com/api/authenticate",
       "method": "POST",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer your-token-here"
+        "X-API-Key": "${API_KEY}"
       },
       "body": {
-        "ping": true
+        "service": "pinger",
+        "token": "${AUTH_TOKEN}",
+        "timestamp": "auto"
       }
     }
   ]
 }
-

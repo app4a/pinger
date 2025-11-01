@@ -1,12 +1,19 @@
 {
-  "pingInterval": "*/30 * * * *",
-  "timeout": 30000,
+  "pingInterval": "*/10 * * * *",
+  "timeout": 60000,
   "endpoints": [
     {
       "name": "QnALive",
       "url": "https://qnalive.onrender.com",
       "method": "GET"
+    },
+    {
+        "name": "Supabase",
+        "url": "https://dpfexndnpqkyaqrvyhrn.supabase.co/health",
+        "method": "POST",
+        "headers": {
+            "apikey": "${SB_TOKEN}"
+        }
     }
   ]
 }
-

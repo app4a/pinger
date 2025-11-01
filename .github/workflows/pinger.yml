@@ -2,7 +2,7 @@ name: Pinger Service
 
 on:
   schedule:
-    # Runs every 10 minutes (configurable in config.json)
+    # Runs every 10 minutes (update this to match your config.json pingInterval)
     - cron: '*/10 * * * *'
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
@@ -21,4 +21,9 @@ jobs:
       
       - name: Run ping script
         run: node ping.js
+        env:
+            SB_TOKEN: ${{ secrets.SB_API_TOKEN }}
+        #   LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+        #   LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+        #   AUTH_KEY: ${{ secrets.AUTH_KEY }}
 
